@@ -1,0 +1,24 @@
+@page
+@model GalleryModel
+@{
+    ViewData["Title"] = "Gallery";
+}
+
+<h1>Gallery</h1>
+
+@if (Model.Stories.Count == 0)
+{
+    <p class="lede">No storyboards yet. <a asp-page="/Index">Create one</a>.</p>
+}
+else
+{
+    <ul class="story-list">
+        @foreach (var story in Model.Stories)
+        {
+            <li>
+                <a asp-page="/Stories/Details" asp-route-id="@story.Id">@story.Title</a>
+                <time>@story.CreatedAt.ToLocalTime().ToString("g")</time>
+            </li>
+        }
+    </ul>
+}
