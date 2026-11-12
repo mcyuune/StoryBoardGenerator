@@ -50,7 +50,7 @@ public class StoryBoardService
         foreach (var scene in scenes)
         {
             var bytes = await _images.GenerateAsync(scene.Caption, cancellationToken);
-            var fileName = $"scene-{scene.Sequence}.svg";
+            var fileName = $"scene-{scene.Sequence}.png";
             await File.WriteAllBytesAsync(Path.Combine(folder, fileName), bytes, cancellationToken);
 
             scene.ImagePath = $"/uploads/{story.Id}/{fileName}";

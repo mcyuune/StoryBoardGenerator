@@ -19,7 +19,7 @@ public class IndexModel : PageModel
     public string Title { get; set; } = string.Empty;
 
     [BindProperty]
-    [Required, MinLength(20)]
+    [Required, MinLength(5)]
     [Display(Name = "Story text")]
     public string SourceText { get; set; } = string.Empty;
 
