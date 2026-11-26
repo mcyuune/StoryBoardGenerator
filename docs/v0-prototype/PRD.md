@@ -11,6 +11,23 @@ Turn a short written story into sequential illustrated scenes, as an intermediat
 - Store stories and scenes in SQLite and images on the local filesystem.
 - View the resulting story and illustrations.
 
+## End-to-end workflow diagram
+
+```mermaid
+flowchart TD
+ A["Enter title and short story"] --> B["Create story"]
+ B --> C["Rule-based paragraph or sentence splitting"]
+ C --> D["Up to 8 ordered scenes"]
+ D --> E["Persist story and scenes in SQLite"]
+ E --> F["Generate illustration for next scene via OpenAI Images API"]
+ F --> G["Save image locally"]
+ G --> H{"More scenes?"}
+ H -->|Yes| F
+ H -->|No| I["Display story and illustrated scenes"]
+```
+
+Current prototype happy path; partial failure handling remains an open question.
+
 ## Technical baseline
 ASP.NET Core Razor Pages, C#, EF Core, SQLite, dependency injection, typed HttpClient and local image storage. Image generation currently runs sequentially within the create workflow and receives scene captions.
 
