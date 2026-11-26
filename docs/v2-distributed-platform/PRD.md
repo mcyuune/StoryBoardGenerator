@@ -7,6 +7,28 @@ Ingest a complete existing book incrementally through messages, assemble and ana
 ## User workflow
 An external producer submits paragraphs or chapters belonging to a book. The platform tracks ingestion progress, assembles the text in order, verifies completeness, analyzes the book and exposes it for review. Generate remains unavailable until ingestion and required analysis are complete. The user then starts illustration generation and tracks progress.
 
+## End-to-end workflow diagram
+
+```mermaid
+flowchart TD
+ A["External producer sends book chunks and completion manifest"] --> B["Book Ingestion Service"]
+ B --> C["Kafka event stream - proposed"]
+ C --> D["Book Processing Service"]
+ D --> E["Deduplicate, order and persist chunks"]
+ E --> F{"Book complete?"}
+ F -->|No| G["Show ingestion progress; Generate disabled"]
+ G -->|More events| D
+ F -->|Yes| H["Analyze complete book"]
+ H --> I["Storyboard API: expose metadata for review"]
+ I --> J["User reviews and explicitly clicks Generate"]
+ J --> K["Schedule asynchronous illustration jobs"]
+ K --> L["Generation workers"]
+ L --> M["Persist results in database and object storage"]
+ M --> N["Display storyboard and generation progress"]
+```
+
+Proposed end-to-end workflow. Missing chunks block readiness; failures must be visible and recoverable. Kafka and job scheduling topology are not finalized.
+
 ## Proposed architecture
 - Book Ingestion Service: validate submissions and publish ingestion events.
 - Kafka: durable event stream, with book ID as a proposed partition key.
