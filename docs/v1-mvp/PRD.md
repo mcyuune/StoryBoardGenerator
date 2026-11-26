@@ -12,6 +12,23 @@ Understand a complete book before generating a visually coherent sketchbook-styl
 5. Generate ordered scene illustrations using story context, approved character references and style.
 6. Browse numbered panels with short captions in a paginated storyboard.
 
+## End-to-end workflow diagram
+
+```mermaid
+flowchart TD
+ A["Create workspace and upload complete book"] --> B["Analyze chapters, characters and places"]
+ B --> C["Review and correct extracted metadata"]
+ C --> D["Choose style and optionally approve character sheets"]
+ D --> E["Segment chapters into ordered visual scenes"]
+ E --> F["Generate structured visual prompts with relevant context"]
+ F --> G["Review and edit scenes and prompts"]
+ G --> H["User explicitly clicks Generate"]
+ H --> I["Generate illustrations using approved prompts and references"]
+ I --> J["Display numbered panels in paginated storyboard"]
+```
+
+Proposed user workflow. Analysis and prompt review precede explicit illustration generation; progress and failures should remain visible.
+
 ## Requirements
 - Preserve original text and chapter/scene order.
 - Persist extracted entities and allow corrections.
