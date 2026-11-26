@@ -7,7 +7,7 @@ Understand a complete book before generating a visually coherent sketchbook-styl
 ## User workflow
 1. Create a story workspace and upload a complete book.
 2. Analyze the text to identify chapters, characters and relevant places.
-3. Review and correct extracted information; optionally create and approve character sheets and choose illustration style.
+3. Review and correct extracted information; refine and approve an illustration style in the AI Art Director (or manually), then optionally create and approve character sheets.
 4. Once analysis is ready, explicitly click Generate.
 5. Generate ordered scene illustrations using story context, approved character references and style.
 6. Browse numbered panels with short captions in a paginated storyboard.
@@ -18,7 +18,7 @@ Understand a complete book before generating a visually coherent sketchbook-styl
 flowchart TD
  A["Create workspace and upload complete book"] --> B["Analyze chapters, characters and places"]
  B --> C["Review and correct extracted metadata"]
- C --> D["Choose style and optionally approve character sheets"]
+ C --> D["AI Art Director or manual style approval; optional character sheets"]
  D --> E["Segment chapters into ordered visual scenes"]
  E --> F["Generate structured visual prompts with relevant context"]
  F --> G["Review and edit scenes and prompts"]
@@ -36,6 +36,77 @@ Proposed user workflow. Analysis and prompt review precede explicit illustration
 - Show analysis and generation progress and failures.
 - Use consistent visual references; perfect character identity is not guaranteed.
 - Compare flat grid and open sketchbook layouts (initial design target: eight panels per desktop spread).
+
+## AI Art Director — Conversational Style Studio
+
+Related issue: [#24](https://github.com/mcyuune/StoryBoardGenerator/issues/24).
+
+### Product vision
+Help authors discover a visual identity grounded in their book rather than requiring them to choose an animation or illustration preset upfront. The AI acts as a collaborative art director, not the final decision maker.
+
+### User experience
+1. Read the first chapter and infer genre, tone, atmosphere and visual cues.
+2. Explain the interpretation and recommend three distinct visual directions, each with a rationale and candidate prompt.
+3. Optionally generate previews of the same scene in different styles so the author can compare actual visual treatments. Preview generation is explicit and cost-aware.
+4. Let the author discuss preferences in natural language, combine directions, request changes and edit the proposed prompt.
+5. Display the final reusable style prompt and require explicit approval.
+6. Persist the approved style and reuse it for character sheets and scene illustrations.
+
+Manual style entry and presets remain alternative paths. A first chapter may not represent the whole book; later recommendations may incorporate the book summary and analysis.
+
+### Illustrative screen and conversation
+**Story Workspace / Illustration Style — Find your story's visual identity**
+
+**AI:** I read the first chapter. The story combines magic, mystery and delicate emotions. I suggest three visual directions:
+
+| Direction | Visual character |
+| --- | --- |
+| Soft Watercolor | Gentle, magical and dreamy |
+| Pencil Storybook | Intimate, detailed hand-drawn sketches |
+| Cinematic Fantasy | Dramatic, cinematic painted illustrations |
+
+**Author:** I like the first direction, but I want less childish colors and more of a pencil-sketch feeling.
+
+**AI:** Let's combine delicate pencil lines, watercolor washes, natural colors and a subtle sense of mystery.
+
+**Your illustration style prompt (editable):**
+
+> Hand-drawn graphite pencil illustrations with delicate watercolor washes, muted natural colors, expressive characters, subtle magical atmosphere, textured sketchbook paper and consistent visual language.
+
+**Action:** Approve illustration style.
+
+This is an illustrative conversation and screen concept, not an implemented UI or a fixed recommendation for every book.
+
+### Workflow
+
+```mermaid
+flowchart TD
+ A["First chapter"] --> B["LLM analyzes tone, genre and atmosphere"]
+ B --> C["Three visual directions with rationale and prompts"]
+ C --> D{"Request visual previews?"}
+ D -->|Yes| E["Generate comparable sample illustrations"]
+ D -->|No| F["Conversational style refinement"]
+ E --> F
+ F --> G["Editable final style prompt"]
+ G --> H{"Author approves?"}
+ H -->|Revise| F
+ H -->|Approve| I["Persist StoryStyleProfile"]
+ I --> J["Character sheet generation"]
+ I --> K["Scene illustration generation"]
+```
+
+### Proposed data and technical design
+Persist a StoryStyleProfile with the approved prompt, illustration technique, color palette, visual mood, realism level, line and texture characteristics, and unwanted elements. Consider versioning approved profiles and recording which version generated each image. Keep conversational state separate from the approved profile; future image requests need the relevant approved style, not the full conversation. Combine it with scene-specific prompts and character references. Preserve the C# backend; an LLM conversation with structured outputs is sufficient for the initial implementation, without requiring an autonomous agent.
+
+### Acceptance criteria
+- Recommendations are grounded in the chapter and explain their reasoning.
+- The author can refine the style conversationally and edit the final prompt.
+- Optional previews allow meaningful comparison without triggering full storyboard generation.
+- Approved style persists and is reused in subsequent character and scene generations.
+- Style revisions do not silently alter existing images; consistent visual identity is a goal, not a guarantee.
+
+### Learning goals and open decisions
+Context engineering, conversational AI, structured outputs, human-in-the-loop approval, prompt engineering and conversation state. Decide preview count, cost limits, conversation persistence, profile schema/versioning and how later chapter context influences style.
 
 ## AI Scene Segmentation & Visual Prompt Generation
 
